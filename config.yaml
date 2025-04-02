@@ -1,0 +1,129 @@
+# OpenMeter Configuration for Railway deployment with Redpanda
+
+# Server address
+address: ":8123"
+
+# Environment for identification
+environment: "production"
+
+telemetry:
+  log:
+    level: info
+    # Uncomment if you want detailed logs
+    # level: debug
+
+# Graceful termination settings
+termination:
+  checkInterval: 1s
+  gracefulShutdownTimeout: 30s
+  propagationTimeout: 3s
+
+# Ingest configuration for Redpanda
+ingest:
+  kafka:
+    # Using environment variables for sensitive information
+    brokers: ${KAFKA_BROKERS}
+    securityProtocol: ${KAFKA_SECURITY_PROTOCOL}
+    saslMechanisms: ${KAFKA_SASL_MECHANISM}
+    saslUsername: ${KAFKA_USERNAME}
+    saslPassword: ${KAFKA_PASSWORD}
+    # Kafka topic configuration
+    partitions: 1
+    eventsTopicTemplate: "om_%s_events"
+    # Connection optimization settings
+    socketKeepAliveEnabled: true
+    topicMetadataRefreshInterval: 1m
+    # Topic cache configuration
+    cacheSize: 250
+    cacheTTL: 5m
+
+# Deduplication to prevent duplicate events
+dedupe:
+  enabled: true
+  driver: redis
+  config:
+    address: ${REDIS_URL}
+    database: 0
+    expiration: 768h # 32 days
+
+# Entitlements configuration
+entitlements:
+  gracePeriod: P1D
+
+# Billing configuration optimized for production
+billing:
+  advancementStrategy: queued
+
+# Portal configuration for consumer access
+portal:
+  enabled: true
+  tokenSecret: ${PORTAL_TOKEN_SECRET}
+  tokenExpiration: 24h
+
+# Postgres database connection
+postgres:
+  url: ${DATABASE_URL}
+  autoMigrate: ent
+
+# Sample meters for LiteLLM integration
+meters:
+  # API Request Counting
+  - slug: api_requests_total
+    description: API Requests
+    eventType: request
+    aggregation: COUNT
+    groupBy:
+      method: $.method
+      route: $.route
+      
+  # LLM Token Usage Tracking
+  - slug: tokens_total
+    description: AI Token Usage
+    eventType: prompt
+    aggregation: SUM
+    valueProperty: $.tokens
+    groupBy:
+      model: $.model
+      type: $.type
+      
+  # Cost Tracking
+  - slug: cost_total
+    description: API Usage Cost
+    eventType: prompt
+    aggregation: SUM
+    valueProperty: $.cost
+    groupBy:
+      model: $.model
+      type: $.type
+
+# Notification configuration
+notification:
+  enabled: true
+  webhook:
+    eventTypeRegistrationTimeout: 30s
+    skipEventTypeRegistrationOnError: false
+
+# Sink configuration (worker that processes events)
+sink:
+  kafka:
+    brokers: ${KAFKA_BROKERS}
+    securityProtocol: ${KAFKA_SECURITY_PROTOCOL}
+    saslMechanisms: ${KAFKA_SASL_MECHANISM}
+    saslUsername: ${KAFKA_USERNAME}
+    saslPassword: ${KAFKA_PASSWORD}
+    socketKeepAliveEnabled: true
+    topicMetadataRefreshInterval: 1m
+    clientID: "openmeter-sink-worker"
+    consumerGroupID: "openmeter-sink-worker"
+    sessionTimeout: 5m
+    heartbeatInterval: 3s
+    enableAutoCommit: true
+    autoOffsetReset: "largest"
+
+# Progress manager configuration
+progressManager:
+  enabled: true
+  expiration: 5m
+  redis:
+    address: ${REDIS_URL}
+    database: 0

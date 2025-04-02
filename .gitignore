@@ -3,7 +3,6 @@
 /.env.local
 /.pre-commit-config.yaml
 /build/
-/config.yaml
 /tmp/
 
 .tmp.*

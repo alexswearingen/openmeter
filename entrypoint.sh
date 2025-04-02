@@ -1,7 +1,11 @@
 #!/bin/bash
 
+echo "Starting OpenMeter with config at /etc/openmeter.yaml"
+
+exec /usr/local/bin/openmeter --config /etc/openmeter.yaml
+
 echo "=================================="
-echo "🚀 Starting OpenMeter"
+echo "🚀 Starting OpenMetefffr"
 echo "Kafka Brokers: $KAFKA_BROKERS"
 echo "Kafka Username: $KAFKA_USERNAME"
 echo "Kafka Protocol: $KAFKA_SECURITY_PROTOCOL"
