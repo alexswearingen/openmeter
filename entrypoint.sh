@@ -20,4 +20,4 @@ export DATABASE_URL
 export REDIS_URL
 export OPENMETER_TOKEN
 
-exec /usr/local/bin/openmeter "$@"
+exec /usr/local/bin/openmeter
