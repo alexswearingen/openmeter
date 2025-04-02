@@ -21,7 +21,9 @@ ENV GOMODCACHE=/go/pkg/mod
 
 COPY --link go.mod go.sum ./
 
-RUN xx-go mod download -x
+RUN --mount=type=cache,target=/go/pkg/mod \
+    --mount=type=cache,target=/go/cache \
+    xx-go mod download -x
 
 ARG VERSION
 
@@ -32,22 +34,30 @@ RUN chmod +x entrypoint.sh
 # See https://github.com/confluentinc/confluent-kafka-go#librdkafka
 # See https://github.com/confluentinc/confluent-kafka-go#static-builds-on-linux
 # Build server binary (default)
-RUN xx-go build -ldflags "-linkmode external -extldflags \"-static\" -X main.version=${VERSION}" -tags musl -o /usr/local/bin/openmeter ./cmd/server
+RUN --mount=type=cache,target=/go/pkg/mod \
+    --mount=type=cache,target=/go/cache \
+    xx-go build -ldflags "-linkmode external -extldflags \"-static\" -X main.version=${VERSION}" -tags musl -o /usr/local/bin/openmeter ./cmd/server
 
 RUN xx-verify /usr/local/bin/openmeter
 
 # Build sink-worker binary
-RUN xx-go build -ldflags "-linkmode external -extldflags \"-static\" -X main.version=${VERSION}" -tags musl -o /usr/local/bin/openmeter-sink-worker ./cmd/sink-worker
+RUN --mount=type=cache,target=/go/pkg/mod \
+    --mount=type=cache,target=/go/cache \
+    xx-go build -ldflags "-linkmode external -extldflags \"-static\" -X main.version=${VERSION}" -tags musl -o /usr/local/bin/openmeter-sink-worker ./cmd/sink-worker
 
 RUN xx-verify /usr/local/bin/openmeter-sink-worker
 
 # Build balance-worker binary
-RUN xx-go build -ldflags "-linkmode external -extldflags \"-static\" -X main.version=${VERSION}" -tags musl -o /usr/local/bin/openmeter-balance-worker ./cmd/balance-worker
+RUN --mount=type=cache,target=/go/pkg/mod \
+    --mount=type=cache,target=/go/cache \
+    xx-go build -ldflags "-linkmode external -extldflags \"-static\" -X main.version=${VERSION}" -tags musl -o /usr/local/bin/openmeter-balance-worker ./cmd/balance-worker
 
 RUN xx-verify /usr/local/bin/openmeter-balance-worker
 
 # Build balance-worker binary
-RUN xx-go build -ldflags "-linkmode external -extldflags \"-static\" -X main.version=${VERSION}" -tags musl -o /usr/local/bin/openmeter-notification-service ./cmd/notification-service
+RUN --mount=type=cache,target=/go/pkg/mod \
+    --mount=type=cache,target=/go/cache \
+    xx-go build -ldflags "-linkmode external -extldflags \"-static\" -X main.version=${VERSION}" -tags musl -o /usr/local/bin/openmeter-notification-service ./cmd/notification-service
 
 RUN xx-verify /usr/local/bin/openmeter-notification-service
 
