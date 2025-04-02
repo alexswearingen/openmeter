@@ -58,11 +58,15 @@ RUN apk add --update --no-cache ca-certificates tzdata bash
 
 SHELL ["/bin/bash", "-c"]
 
+COPY config.yaml /etc/openmeter.yaml
+
 COPY --link --from=builder /usr/local/bin/openmeter /usr/local/bin/
 COPY --link --from=builder /usr/local/bin/openmeter-sink-worker /usr/local/bin/
 COPY --link --from=builder /usr/local/bin/openmeter-balance-worker /usr/local/bin/
 COPY --link --from=builder /usr/local/bin/openmeter-notification-service /usr/local/bin/
 COPY --link --from=builder /src/go.* /usr/local/src/openmeter/
 COPY --link --from=builder /src/entrypoint.sh /entrypoint.sh
+
+COPY --link config.yaml /etc/openmeter.yaml
 
 ENTRYPOINT ["/entrypoint.sh"]

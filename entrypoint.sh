@@ -1,11 +1,18 @@
 #!/bin/bash
 
-echo "Starting OpenMeter with config at /etc/openmeter.yaml"
+CONFIG_FILE="/etc/openmeter.yaml"
 
-exec /usr/local/bin/openmeter --config /etc/openmeter.yaml
+echo "🔍 Looking for config at $CONFIG_FILE"
+if [[ -f "$CONFIG_FILE" ]]; then
+  echo "✅ Found config. Launching OpenMeter with it."
+  exec /usr/local/bin/openmeter --config "$CONFIG_FILE"
+else
+  echo "❌ Config file not found. Exiting."
+  exit 1
+fi
 
 echo "=================================="
-echo "🚀 Starting OpenMetefffr"
+echo "🚀 Starting OpenMeter"
 echo "Kafka Brokers: $KAFKA_BROKERS"
 echo "Kafka Username: $KAFKA_USERNAME"
 echo "Kafka Protocol: $KAFKA_SECURITY_PROTOCOL"
