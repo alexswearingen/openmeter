@@ -2,17 +2,22 @@
 
 CONFIG_FILE="/etc/openmeter.yaml"
 
-echo "🔍 Looking for config at $CONFIG_FILE"
+echo "🔍 Validating config at $CONFIG_FILE"
 if [[ -f "$CONFIG_FILE" ]]; then
-  echo "✅ Found config. Launching OpenMeter with it."
-  echo "🔧 Running OpenMeter manually..."
-  /usr/local/bin/openmeter --config "$CONFIG_FILE"
-  echo "❌ OpenMeter failed with exit code $?"
+  /usr/local/bin/openmeter --config "$CONFIG_FILE" --validate
+  VALID_EXIT=$?
+
+  if [[ $VALID_EXIT -ne 0 ]]; then
+    echo "❌ Config validation failed (code $VALID_EXIT)"
+    exit $VALID_EXIT
+  else
+    echo "✅ Config is valid. Launching OpenMeter."
+    exec /usr/local/bin/openmeter --config "$CONFIG_FILE"
+  fi
 else
   echo "❌ Config file not found. Exiting."
   exit 1
 fi
-
 echo "=================================="
 echo "🚀 Starting OpenMeter"
 echo "Kafka Brokers: $KAFKA_BROKERS"
