@@ -5,7 +5,9 @@ CONFIG_FILE="/etc/openmeter.yaml"
 echo "🔍 Looking for config at $CONFIG_FILE"
 if [[ -f "$CONFIG_FILE" ]]; then
   echo "✅ Found config. Launching OpenMeter with it."
-  exec /usr/local/bin/openmeter --config "$CONFIG_FILE"
+  echo "🔧 Running OpenMeter manually..."
+  /usr/local/bin/openmeter --config "$CONFIG_FILE"
+  echo "❌ OpenMeter failed with exit code $?"
 else
   echo "❌ Config file not found. Exiting."
   exit 1
@@ -30,5 +32,3 @@ export KAFKA_SASL_MECHANISM
 export DATABASE_URL
 export REDIS_URL
 export OPENMETER_TOKEN
-
-exec /usr/local/bin/openmeter
