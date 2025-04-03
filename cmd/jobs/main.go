@@ -34,7 +34,8 @@ func main() {
 
 	err := internal.InitializeApplication(ctx, configFileName)
 	if err != nil {
-		slog.Error("failed to initialize application", "error", err)
+		fmt.Printf("🚨 Failed to initialize: %+v\n", err)
+		slog.Error("failed to initialize application jobs", "error", err)
 
 		// Call cleanup function is may not set yet
 		if internal.AppShutdown != nil {

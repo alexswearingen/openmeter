@@ -77,7 +77,8 @@ func main() {
 
 	app, cleanup, err := initializeApplication(ctx, conf)
 	if err != nil {
-		slog.Error("failed to initialize application", "error", err)
+		fmt.Printf("🚨 Failed to initialize: %+v\n", err)
+		slog.Error("failed to initialize application server", "error", err)
 
 		// Call cleanup function is may not set yet
 		if cleanup != nil {
