@@ -9,6 +9,10 @@ environment: "production"
 telemetry:
   log:
     level: debug
+    exporters:
+      console:
+        enabled: true
+        prettyprint: true
     # Uncomment if you want detailed logs
     # level: debug
 
