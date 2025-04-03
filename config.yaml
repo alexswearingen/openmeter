@@ -39,7 +39,7 @@ ingest:
 
 # Deduplication to prevent duplicate events
 dedupe:
-  enabled: true
+  enabled: false
   driver: redis
   config:
     address: ${REDIS_URL}
@@ -52,11 +52,11 @@ entitlements:
 
 # Billing configuration optimized for production
 billing:
-  advancementStrategy: queued
+  # advancementStrategy: queued
 
 # Portal configuration for consumer access
 portal:
-  enabled: true
+  enabled: false
   tokenSecret: ${PORTAL_TOKEN_SECRET}
   tokenExpiration: 24h
 
@@ -66,39 +66,39 @@ postgres:
   autoMigrate: ent
 
 # Sample meters for LiteLLM integration
-meters:
+meters: []
   # API Request Counting
-  - slug: api_requests_total
-    description: API Requests
-    eventType: request
-    aggregation: COUNT
-    groupBy:
-      method: $.method
-      route: $.route
+  # - slug: api_requests_total
+  #   description: API Requests
+  #   eventType: request
+  #   aggregation: COUNT
+  #   groupBy:
+  #     method: $.method
+  #     route: $.route
       
-  # LLM Token Usage Tracking
-  - slug: tokens_total
-    description: AI Token Usage
-    eventType: prompt
-    aggregation: SUM
-    valueProperty: $.tokens
-    groupBy:
-      model: $.model
-      type: $.type
+  # # LLM Token Usage Tracking
+  # - slug: tokens_total
+  #   description: AI Token Usage
+  #   eventType: prompt
+  #   aggregation: SUM
+  #   valueProperty: $.tokens
+  #   groupBy:
+  #     model: $.model
+  #     type: $.type
       
-  # Cost Tracking
-  - slug: cost_total
-    description: API Usage Cost
-    eventType: prompt
-    aggregation: SUM
-    valueProperty: $.cost
-    groupBy:
-      model: $.model
-      type: $.type
+  # # Cost Tracking
+  # - slug: cost_total
+  #   description: API Usage Cost
+  #   eventType: prompt
+  #   aggregation: SUM
+  #   valueProperty: $.cost
+  #   groupBy:
+  #     model: $.model
+  #     type: $.type
 
 # Notification configuration
 notification:
-  enabled: true
+  enabled: false
   webhook:
     eventTypeRegistrationTimeout: 30s
     skipEventTypeRegistrationOnError: false
